@@ -8,12 +8,13 @@
 int read_file(char* filename, char** buffer){
 	struct stat st;
 
-	FILE* fileA = fopen(filename, "r");
+	FILE* fileA = fopen(filename, "rb");
 	stat(filename, &st);
 	int size = st.st_size;
 
 	if(size == 0){
 		fprintf(stderr, "Error reading file");
+		exit(1);
 	}
 	
 	*buffer = malloc(size*sizeof(char));
@@ -29,12 +30,15 @@ int read_file(char* filename, char** buffer){
 }
 
 int write_file(char* filename, char* buffer, int size){
-	FILE* fileB = fopen(filename, "w");
-	
-	//https://www.tutorialgateway.org/fputc-in-c/
-	for(int i = 1; i < size; i++){
-		fputc(*(buffer + i), fileB);
-	}
+	FILE* fileB = fopen(filename, "wb");
+
+	if(size == 0){
+                fprintf(stderr, "Error reading file");
+                exit(1);
+        }
+
+	//http://www.cplusplus.com/reference/cstdio/fwrite/	
+	fwrite(buffer, 1, size, fileB);
 	
 	fclose(fileB);
 	return 0;	
